@@ -111,5 +111,34 @@ namespace yunchanbackproject.Controllers
             await DBContext.SaveChangesAsync();
             return 0;
         }
+
+        [HttpDelete("delete-id/{productId}")]
+        public async Task<int> removeProducto(int productId){
+             var entity = new Product()
+            {
+                id = productId
+            };
+            DBContext.Products.Attach(entity);
+            DBContext.Products.Remove(entity);
+            await DBContext.SaveChangesAsync();
+            var entityToValidate = DBContext.Products.Select(s => new ProductModel
+            {
+                id = s.id,
+                nombre = s.nombre,
+                precio = s.precio,
+                imagen = s.imagen,
+                descriopcion = s.descriopcion,
+                stok = s.stok
+
+            }).FirstOrDefaultAsync(s => s.id == productId);
+            if (entityToValidate == null)
+            {
+                return 0;
+
+            }
+            else {
+                return 1;
+            }
+        }
     }
 }

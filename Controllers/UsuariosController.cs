@@ -45,6 +45,32 @@ namespace yunchanbackproject.Controllers
             }
         }
 
+        [HttpGet("by-id/{id}")]
+        public async Task<ActionResult<UsuariosModel>> loguinUser(int id)
+        {
+            var User = await DBContext.Users.Select(
+                s => new UsuariosModel
+                {
+                    id = s.id,
+                    nombre = s.nombre,
+                    apellido = s.apellido,
+                    correo = s.correo,
+                    password = s.password,
+                    telefono = s.telefono,
+                    perfil = s.perfil
+                }
+            ).FirstOrDefaultAsync(s => s.id == id);
+
+            if (User == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return User;
+            }
+        }
+
         [HttpGet]
         public async Task<ActionResult<List<UsuariosModel>>> getAll()
         {
@@ -77,7 +103,7 @@ namespace yunchanbackproject.Controllers
             int lastUser = DBContext.Users.Max(u => u.id);
             var entity = new User
             {
-                id = lastUser+1,
+                id = lastUser + 1,
                 nombre = user.nombre,
                 apellido = user.apellido,
                 correo = user.correo,
@@ -108,7 +134,8 @@ namespace yunchanbackproject.Controllers
         }
 
         [HttpPut]
-        public async Task<int> update(UsuariosModel user){
+        public async Task<int> update(UsuariosModel user)
+        {
             var entitySave = await DBContext.Users.FirstOrDefaultAsync(p => p.id == user.id);
             entitySave.apellido = user.apellido;
             entitySave.correo = user.correo;
@@ -118,6 +145,27 @@ namespace yunchanbackproject.Controllers
             entitySave.telefono = user.telefono;
             await DBContext.SaveChangesAsync();
             return 0;
+        }
+
+        [HttpDelete("delete-id/{userId}")]
+        public async Task<int> removeProducto(int userId)
+        {
+            var entity = new User()
+            {
+                id = userId
+            };
+            DBContext.Users.Attach(entity);
+            DBContext.Users.Remove(entity);
+            await DBContext.SaveChangesAsync();
+            var entityToValidate = DBContext.Users.FirstOrDefaultAsync(s => s.id == userId);
+            if (entityToValidate == null)
+            {
+                return 0;
+
+            }
+            else {
+                return 1;
+            }
         }
     }
 }
