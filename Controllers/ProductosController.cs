@@ -133,11 +133,10 @@ namespace yunchanbackproject.Controllers
             }).FirstOrDefaultAsync(s => s.id == productId);
             if (entityToValidate == null)
             {
-                return 0;
-
+                return 1;
             }
             else {
-                return 1;
+                return 0;
             }
         }
     }

@@ -160,11 +160,11 @@ namespace yunchanbackproject.Controllers
             var entityToValidate = DBContext.Users.FirstOrDefaultAsync(s => s.id == userId);
             if (entityToValidate == null)
             {
-                return 0;
+                return 1;
 
             }
             else {
-                return 1;
+                return 0;
             }
         }
     }
